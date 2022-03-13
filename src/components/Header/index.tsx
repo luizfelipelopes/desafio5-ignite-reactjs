@@ -1,3 +1,14 @@
+import Link from "next/link"
+
+
 export default function Header() {
-  // TODO
+  return(
+    <div className="container">
+      <div className="content">
+        <Link href={"/"}>
+          <a><img src="/logo.svg" alt="logo" /></a>
+        </Link>
+      </div>
+    </div>
+  );
 }

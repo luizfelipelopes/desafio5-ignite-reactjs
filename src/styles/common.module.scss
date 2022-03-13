@@ -1,1 +1,44 @@
-// TODO
+.container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .content {
+
+        width: 100%;
+        max-width: 1120px;
+        padding: 2rem 1rem;
+
+        header {
+            width: 100%;
+
+        }
+
+        .posts {
+            width: 100%;
+            padding-top: 3rem;
+            padding-bottom: 2rem;
+
+            a {
+                display: flex;
+                width: fit-content;
+            }
+
+            p {
+               color: var(--gray-300);
+               margin: 0.5rem 0 1rem 0;
+            }
+
+            span {
+                margin-right: 1rem;
+                color: var(--gray-800);
+                font-size: 0.85rem;
+            }
+
+            div {
+                margin-bottom: 2rem;
+            }
+        }
+    }
+}
