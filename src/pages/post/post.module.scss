@@ -40,7 +40,7 @@
 
         .posts {
             width: 100%;
-            max-width: 1120px;
+            max-width: 768px;
             padding-top: 3rem;
             padding-bottom: 2rem;
 
@@ -55,6 +55,12 @@
 
                 span {
                     margin-right: 1rem;
+                    color: var(--gray-800);
+                    font-size: 0.85rem;
+                }
+
+                p {
+                    margin-top: 1rem;;
                     color: var(--gray-800);
                     font-size: 0.85rem;
                 }
@@ -75,6 +81,49 @@
 
             div {
                 margin-bottom: 2rem;
+            }
+
+            .containerNav {
+                width: 100%;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                border-top: 0.01rem solid var(--gray-300);
+                padding-top: 2rem;
+
+                .navItem {
+                    display: flex;
+                    flex-wrap: wrap;
+
+
+                    span {
+                        width: 100%;
+                        margin-bottom: 1rem;
+                    }
+
+                    a {
+                        display: block;
+                        color: var(--pink-500);
+                        font-weight: bold;
+
+
+                        transition: filter 0.2s;
+
+                        &:hover {
+                            filter: brightness(0.8);
+                        }
+
+
+                    }
+
+                    & + .navItem {
+                        text-align: right;
+                        justify-content: right;
+                    }
+
+                }
             }
         }
     }

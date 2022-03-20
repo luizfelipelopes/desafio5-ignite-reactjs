@@ -7,7 +7,7 @@ import {
 import { ParsedUrlQuery, parse } from 'querystring';
 
 import { useRouter } from 'next/router';
-import { getPrismicClient } from '../../services/prismic';
+import { getPrismicClient, createClient } from '../../services/prismic';
 import Post, { getStaticProps, getStaticPaths } from '../../pages/post/[slug]';
 
 interface Post {
@@ -25,8 +25,16 @@ interface Post {
   };
 }
 
+interface NavPost {
+  uid: string;
+  title: string;
+}
+
 interface PostProps {
   post: Post;
+  preview: boolean;
+  previewItem?: NavPost;
+  nextItem?: NavPost;
 }
 
 interface GetStaticPropsResult {
@@ -47,6 +55,7 @@ const mockedQueryReturn = {
 const mockedGetByUIDReturn = {
   uid: 'como-utilizar-hooks',
   first_publication_date: '2021-03-25T19:25:28+0000',
+  last_publication_date: '2021-03-25T19:25:28+0000',
   data: {
     title: 'Como utilizar Hooks',
     subtitle: 'Pensando em sincronização em vez de ciclos de vida',
@@ -189,7 +198,7 @@ jest.mock('@prismicio/client');
 jest.mock('../../services/prismic');
 jest.mock('next/router');
 const mockedUseRouter = useRouter as jest.Mock;
-const mockedPrismic = getPrismicClient as jest.Mock;
+const mockedPrismic = createClient as jest.Mock;
 
 describe('Post', () => {
   beforeAll(() => {
@@ -236,6 +245,8 @@ describe('Post', () => {
     const postReturn = mockedGetByUIDReturn;
     const getStaticPropsContext: GetStaticPropsContext<ParsedUrlQuery> = {
       params: routeParam,
+      preview: false,
+      previewData: null
     };
 
     const response = (await getStaticProps(
@@ -248,7 +259,7 @@ describe('Post', () => {
   it('should be able to render post document info', () => {
     const postProps = mockedGetByUIDReturn;
 
-    render(<Post post={postProps} />);
+    render(<Post post={postProps} preview={false} />);
 
     screen.getByText('Como utilizar Hooks');
     screen.getByText('25 mar 2021');
@@ -268,7 +279,7 @@ describe('Post', () => {
 
     const postProps = mockedGetByUIDReturn;
 
-    render(<Post post={postProps} />);
+    render(<Post post={postProps} preview={false} />);
 
     screen.getByText('Carregando...');
   });

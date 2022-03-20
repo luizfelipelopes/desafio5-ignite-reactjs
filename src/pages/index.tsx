@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import Prismic from "@prismicio/client";
-import { getPrismicClient } from '../services/prismic';
+import * as prismic from "@prismicio/client";
+import { createClient, getPrismicClient } from '../services/prismic';
 import { AiOutlineCalendar } from "react-icons/ai"
 import { FiUser } from "react-icons/fi"
 import { format } from "date-fns";
@@ -11,6 +11,7 @@ import Header from '../components/Header';
 
 import stylesCustom from '../styles/common.module.scss';
 import styles from './home.module.scss';
+import { GetStaticProps } from 'next';
 
 interface Post {
   uid?: string;
@@ -29,9 +30,10 @@ interface PostPagination {
 
 interface HomeProps {
   postsPagination: PostPagination;
+  preview: boolean;
 }
 
-export default function Home({ postsPagination }: HomeProps) {
+export default function Home({ postsPagination, preview }: HomeProps) {
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [nextPage, setNextPage] = useState(postsPagination.next_page);
@@ -58,8 +60,9 @@ export default function Home({ postsPagination }: HomeProps) {
   async function loadMorePosts() {
 
     if(nextPage){
+      // console.log(nextPage, postsPagination.next_page);
 
-      const data = await fetch(postsPagination.next_page)
+      const data = await fetch(nextPage)
       .then(response => response.json())
       .catch(error => console.log(error));
 
@@ -91,7 +94,6 @@ export default function Home({ postsPagination }: HomeProps) {
 
   return (
     <>
-
     <div className={stylesCustom.container}>
       <div className={stylesCustom.content}>
           <header>
@@ -117,23 +119,44 @@ export default function Home({ postsPagination }: HomeProps) {
             <a href='#' className={styles.morePosts} onClick={() => loadMorePosts()}>Carregar mais posts</a>
           )}
 
+        {preview && (
+          <aside>
+            <Link href="/api/exit-preview.ts">
+              <a className={stylesCustom.exitPreview}>Sair do modo Preview</a>
+            </Link>
+          </aside>
+        )}
       </div>
+
     </div>
+
     </>
   );
 }
 
-export const getStaticProps = async () => {
-  const prismic = getPrismicClient();
-  const postsResponse = await prismic.query([
-    Prismic.Predicates.at('document.type', 'posts')
+export const getStaticProps: GetStaticProps<HomeProps> = async ({
+  preview = false,
+  previewData,
+}
+) => {
+
+  // console.log('previewData', previewData);
+
+  // const prismic = getPrismicClient();
+  const prismicRes = createClient({ previewData });
+
+  const postsResponse = await prismicRes.query([
+    prismic.predicate.at('document.type', 'posts')
     ],{
       fetch: ['posts.title', 'posts.subtitle', 'posts.subtitle', 'posts.author', 'posts.banner', 'posts.content'],
       pageSize: 1,
-
+      ref: previewData?.ref ?? null,
     }
 
   );
+
+  // console.log(postsResponse);
+  // console.log(JSON.stringify(postsResponse), null, ' ');
 
   const posts = postsResponse.results.map(post => {
 
@@ -155,7 +178,8 @@ export const getStaticProps = async () => {
       postsPagination: {
         next_page: postsResponse.next_page,
         results: posts
-      }
+      },
+      preview
     }
   }
 };

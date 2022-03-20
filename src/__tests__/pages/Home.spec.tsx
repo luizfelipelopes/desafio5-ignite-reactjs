@@ -1,9 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { GetStaticPropsContext } from 'next';
 import { ParsedUrlQuery } from 'querystring';
-import { RouterContext } from 'next/dist/next-server/lib/router-context';
+import { RouterContext } from 'next/dist/shared/lib/router-context';
+// import { RouterContext } from 'next/dist/next-server/lib/router-context';
 
-import { getPrismicClient } from '../../services/prismic';
+import { getPrismicClient, createClient } from '../../services/prismic';
 import App, { getStaticProps } from '../../pages';
 
 interface Post {
@@ -57,7 +58,7 @@ const mockedQueryReturn = {
 jest.mock('@prismicio/client');
 jest.mock('../../services/prismic');
 
-const mockedPrismic = getPrismicClient as jest.Mock;
+const mockedPrismic = createClient as jest.Mock;
 const mockedFetch = jest.spyOn(window, 'fetch') as jest.Mock;
 const mockedPush = jest.fn();
 let RouterWrapper;

@@ -7,7 +7,7 @@
     .content {
 
         width: 100%;
-        max-width: 1120px;
+        max-width: 768px;
         padding: 2rem 1rem;
 
         header {
@@ -40,5 +40,26 @@
                 margin-bottom: 2rem;
             }
         }
+    }
+}
+
+.exitPreview {
+
+    width: 100%;
+    max-width: 1120px;
+
+    display: block;
+    color: var(--gray-900);
+    background: var(--gray-100);
+    font-weight: bold;
+
+    padding: 1rem 0;
+    border-radius: 0.75rem;
+    text-align: center;
+
+    transition: filter 0.2s;
+
+    &:hover {
+        filter: brightness(0.8);
     }
 }
